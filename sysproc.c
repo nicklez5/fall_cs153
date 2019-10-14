@@ -16,14 +16,16 @@ sys_fork(void)
 int
 sys_exit(void)
 {
-  exit();
+	
+  exit(0); // Inserted a zero. 
   return 0;  // not reached
 }
 
 int
 sys_wait(void)
 {
-  return wait();
+  int *random_ptr; 
+  return wait(random_ptr);
 }
 
 int

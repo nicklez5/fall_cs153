@@ -222,10 +222,10 @@ fork(void)
 }
 
 // Exit the current process.  Does not return.
-// An exited process remains in the zombie state
+ // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
 void
-exit(void)
+exit(int status)
 {
   struct proc *curproc = myproc();
   struct proc *p;
@@ -247,6 +247,8 @@ exit(void)
   end_op();
   curproc->cwd = 0;
 
+  //Im guessing status has been defined and you store the terminated process exit status here. 
+  curproc->exit_status = status;
   acquire(&ptable.lock);
 
   // Parent might be sleeping in wait().
@@ -266,11 +268,20 @@ exit(void)
   sched();
   panic("zombie exit");
 }
-
+int exit_status(int current_proc){
+	struct proc *p;
+	struct proc *curproc = myproc();
+	acquire(&ptable.lock);
+	for(;;){
+		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+			release(&ptable.lock);		
+		}
+	}	
+}
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
-wait(void)
+wait(int *status)
 {
   struct proc *p;
   int havekids, pid;
@@ -295,6 +306,9 @@ wait(void)
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
+	if(status != NULL){
+	   &status = p->exit_status;	
+	} 	
         release(&ptable.lock);
         return pid;
       }
@@ -495,7 +509,43 @@ kill(int pid)
   release(&ptable.lock);
   return -1;
 }
-
+//Wait for a process with a pid that is equal to one of the pid provided in the argument
+//Return value: process id of the process that was terminated or -1 if no process exist or error 
+int waitpid(int pid,int *status,int options){
+   struct proc *p;
+   struct proc *curr_proc = myproc();
+   int found_me,_pid;
+   acquire(&ptable.lock);
+   for(;;){
+      found_me = 0;
+      for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
+       if(p->pid == pid)
+	 continue;
+ 	found_me = 1;
+       if(p->state == ZOMBIE){
+	_pid = p->pid;
+	kfree(p->kstack);
+	p->kstack = 0;
+	freevm(p->pgdir);
+	p->pid = 0;
+	p->parent = 0;
+	p->name[0] = 0;
+	p->killed = 0;
+	p->state = UNUSED;
+	if(status != NULL){
+	   &status = p->exit_status;	
+	}
+	release(&ptable.lock);
+	return _pid;
+        }
+      }
+   if(!found_me || curproc->killed){
+     release(&ptable.lock);
+     return -1;
+   }
+   sleep(curproc, &ptable.lock);
+  }
+}
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
@@ -518,7 +568,7 @@ procdump(void)
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
-      continue;
+
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
     else

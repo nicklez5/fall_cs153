@@ -42,8 +42,11 @@ main(int argc, char *argv[])
   for (i = 0; i < 20; i++)
     read(fd, data, sizeof(data));
   close(fd);
+	int random_exit_value = 0;
   int *child_exit_status;
+	child_exit_status = &random_exit_value;
   wait(child_exit_status);
 
   exit(0);
+	return 0;
 }

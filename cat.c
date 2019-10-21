@@ -1,7 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-
+//#include "proc.h"
 char buf[512];
 
 void
@@ -40,4 +40,5 @@ main(int argc, char *argv[])
     close(fd);
   }
   exit(0);
+  return 0;
 }

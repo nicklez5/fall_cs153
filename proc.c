@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+#include "stddef.h"
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -268,6 +268,7 @@ exit(int status)
   sched();
   panic("zombie exit");
 }
+/*
 int exit_status(int current_proc){
 	struct proc *p;
 	struct proc *curproc = myproc();
@@ -278,6 +279,8 @@ int exit_status(int current_proc){
 		}
 	}	
 }
+*/
+
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
@@ -307,7 +310,7 @@ wait(int *status)
         p->killed = 0;
         p->state = UNUSED;
 	if(status != NULL){
-	   &status = p->exit_status;	
+	   status = &p->exit_status;	
 	} 	
         release(&ptable.lock);
         return pid;
@@ -523,27 +526,27 @@ int waitpid(int pid,int *status,int options){
 	 continue;
  	found_me = 1;
        if(p->state == ZOMBIE){
-	_pid = p->pid;
-	kfree(p->kstack);
-	p->kstack = 0;
-	freevm(p->pgdir);
-	p->pid = 0;
-	p->parent = 0;
-	p->name[0] = 0;
-	p->killed = 0;
-	p->state = UNUSED;
-	if(status != NULL){
-	   &status = p->exit_status;	
-	}
-	release(&ptable.lock);
-	return _pid;
+		_pid = p->pid;
+		kfree(p->kstack);
+		p->kstack = 0;
+		freevm(p->pgdir);
+		p->pid = 0;
+		p->parent = 0;
+		p->name[0] = 0;
+		p->killed = 0;
+		p->state = UNUSED;
+		if(status != NULL){
+	   		*status = p->exit_status;	
+		}
+		release(&ptable.lock);
+		return _pid;
         }
       }
-   if(!found_me || curproc->killed){
+   if((!found_me) || (curr_proc->killed)){
      release(&ptable.lock);
      return -1;
    }
-   sleep(curproc, &ptable.lock);
+   sleep(curr_proc, &ptable.lock);
   }
 }
 //PAGEBREAK: 36
@@ -568,7 +571,7 @@ procdump(void)
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
-
+	continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
     else

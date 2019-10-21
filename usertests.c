@@ -66,7 +66,9 @@ exitiputtest(void)
     }
     exit(0);
   }
+	int random_exit_value = 0;
   int *child_exit_status;
+	child_exit_status = &random_exit_value;
   wait(child_exit_status);
   printf(stdout, "exitiput test ok\n");
 }
@@ -110,7 +112,9 @@ openiputtest(void)
     printf(stdout, "unlink failed\n");
     exit(1);
   }
+	int random_value = 0;
   int *temp_ptr; 
+	temp_ptr = &random_value;
   wait(temp_ptr);
   printf(stdout, "openiput test ok\n");
 }
@@ -1382,7 +1386,9 @@ void
 forktest(void)
 {
   int n, pid;
+	int random_test_value = 0;
   int *temp_status;
+	temp_status = &random_test_value;
   printf(1, "fork test\n");
 
   for(n=0; n<1000; n++){
@@ -1448,6 +1454,8 @@ sbrktest(void)
   }
   if(pid == 0)
     exit(0);
+	int random_test_value = 0;
+	child_id_exit = &random_test_value;
   wait(child_id_exit);
 
   // can one grow address space to something big?
@@ -1616,7 +1624,9 @@ void
 bigargtest(void)
 {
   int pid, fd;
+	int random_test_value = 0;
   int *temp_ptr;
+	temp_ptr = &random_test_value;
   unlink("bigarg-ok");
   pid = fork();
   if(pid == 0){
@@ -1723,6 +1733,8 @@ uio()
     printf (1, "fork failed\n");
     exit(1);
   }
+	int random_test_value = 0;
+	temp_ptr = &random_test_value;
   wait(temp_ptr);
   printf(1, "uio test done\n");
 }
@@ -1803,4 +1815,5 @@ main(int argc, char *argv[])
   exectest();
 
   exit(0);
+	return 0;
 }

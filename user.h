@@ -1,6 +1,7 @@
 struct stat;
 struct rtcdate;
 
+#include "types.h"
 // system calls
 int fork(void);
 void exit(int);
@@ -20,6 +21,7 @@ int link(const char*, const char*);
 int mkdir(const char*);
 int chdir(const char*);
 int dup(int);
+//void printf(int,const char*,...);
 int getpid(void);
 char* sbrk(int);
 int sleep(int);
@@ -31,10 +33,10 @@ char* strcpy(char*, const char*);
 void *memmove(void*, const void*, int);
 char* strchr(const char*, char c);
 int strcmp(const char*, const char*);
-void printf(int, const char*, ...);
+void printf(int, const char*,...);
 char* gets(char*, int max);
-uint strlen(const char*);
-void* memset(void*, int, uint);
+int strlen(const char*);
+void* memset(void*, int, int);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);

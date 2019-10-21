@@ -32,7 +32,9 @@ forktest(void)
     printf(1, "fork claimed to work N times!\n", N);
     exit(0);
   }
-  int *child_exit_status;
+  int random_value_holder = 0;
+  int *child_exit_status; 
+  child_exit_status = &random_value_holder;
   for(; n > 0; n--){
     if(wait(child_exit_status) < 0){
       printf(1, "wait stopped early\n");
@@ -51,6 +53,7 @@ forktest(void)
 int
 main(void)
 {
-  forktest();
-  exit(0);
+ 	 forktest();
+ 	 exit(0);
+	return 0;
 }

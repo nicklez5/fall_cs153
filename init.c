@@ -31,7 +31,9 @@ main(void)
       printf(1, "init: exec sh failed\n");
       exit(1);
     }
+	int random_exit_value = 0;
     int *child_exit_status; 
+	child_exit_status = &random_exit_value;
     while((wpid=wait(child_exit_status)) >= 0 && wpid != pid)
       printf(1, "zombie!\n");
   }

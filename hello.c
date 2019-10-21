@@ -1,13 +1,26 @@
-#include <stdio.h>
 #include "user.h"
 #include "types.h"
-
+//#include <stdint.h>
+//#include "inttypes.h"
 int main(int argc, char **argv){
-	int pid, ret_pid, exit_status;
+	int pid, ret_pid;
+	int random_test_value = 0;
+	int *exit_status;
+	exit_status = &random_test_value;
 	pid = fork();
 	if(pid == 0){
-		printf(1,"\nThis is child with PID# %d and I will exit with status %d\n",getpid(),0);
-		exit(-1
+		//getpid() must return a zero since it is a child. 
+		printf(1,"\nThis is the child: PID# %d has exited with status %d\n",getpid(),0);
+		exit(-1);
+	}else if(pid > 0){
+		//what does wait(exit_status) return though.
+		ret_pid = wait(exit_status);
+		printf(1,"\nThis is the parent: PID# %d has exited with status %d\n",ret_pid,exit_status);	
+	}else
+		exit(-1);
+	exit(0);
+	return 0;
+	/*
 	int status,_temp;
 
 	for(_temp = 0; _temp < 6; _temp++){
@@ -22,6 +35,7 @@ int main(int argc, char **argv){
 			printf("Child %d terminated with status\n",cpid);
 		}
 	}
+	*/
 	/*
 	if(child_id == -1){
 		perror("fork error");
@@ -41,6 +55,6 @@ int main(int argc, char **argv){
 	}
 	*/
 	//printf("Hello World\n");
-	return 0;
+	
 }
 

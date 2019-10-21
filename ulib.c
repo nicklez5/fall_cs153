@@ -23,7 +23,7 @@ strcmp(const char *p, const char *q)
   return (uchar)*p - (uchar)*q;
 }
 
-uint
+int
 strlen(const char *s)
 {
   int n;
@@ -34,7 +34,7 @@ strlen(const char *s)
 }
 
 void*
-memset(void *dst, int c, uint n)
+memset(void *dst, int c, int n)
 {
   stosb(dst, c, n);
   return dst;

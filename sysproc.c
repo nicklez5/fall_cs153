@@ -6,7 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-
+#include "stddef.h"
 int
 sys_fork(void)
 {
@@ -25,6 +25,7 @@ int
 sys_wait(void)
 {
   int *random_ptr; 
+  random_ptr = NULL;
   return wait(random_ptr);
 }
 

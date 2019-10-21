@@ -93,7 +93,9 @@ runcmd(struct cmd *cmd)
     lcmd = (struct listcmd*)cmd;
     if(fork1() == 0)
       runcmd(lcmd->left);
+	int random_exit_value2 = 0;
     int *temp;
+	temp = &random_exit_value2;
     wait(temp);
     runcmd(lcmd->right);
     break;
@@ -118,9 +120,11 @@ runcmd(struct cmd *cmd)
     }
     close(p[0]);
     close(p[1]);
-    int *temp;
-    wait(temp);
-    wait(temp);
+	int random_exit_value = 0;
+    int *tempz;
+	tempz = &random_exit_value;
+    wait(tempz);
+    wait(tempz);
     break;
 
   case BACK:
@@ -169,9 +173,12 @@ main(void)
     if(fork1() == 0)
       runcmd(parsecmd(buf));
     int *temp_ptr;
+    int random_exit_value0  = 0;
+	temp_ptr = &random_exit_value0;
     wait(temp_ptr);
   }
   exit(0);
+	return 0;
 }
 
 void

@@ -4,9 +4,10 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "x86.h"
-#include "proc.h"
 #include "spinlock.h"
-#include "stddef.h"
+#include "proc.h"
+//#include <stdio.h>
+//#include <stddef.h>
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -309,7 +310,7 @@ wait(int *status)
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
-	if(status != NULL){
+	if(status){
 	   status = &p->exit_status;	
 	} 	
         release(&ptable.lock);
@@ -514,7 +515,9 @@ kill(int pid)
 }
 //Wait for a process with a pid that is equal to one of the pid provided in the argument
 //Return value: process id of the process that was terminated or -1 if no process exist or error 
-int waitpid(int pid,int *status,int options){
+int
+waitpid(int pid, int *status, int options)
+{
    struct proc *p;
    struct proc *curr_proc = myproc();
    int found_me,_pid;
@@ -522,24 +525,24 @@ int waitpid(int pid,int *status,int options){
    for(;;){
       found_me = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
-       if(p->pid == pid)
+       if(p->pid != pid)
 	 continue;
  	found_me = 1;
        if(p->state == ZOMBIE){
-		_pid = p->pid;
-		kfree(p->kstack);
-		p->kstack = 0;
-		freevm(p->pgdir);
-		p->pid = 0;
-		p->parent = 0;
-		p->name[0] = 0;
-		p->killed = 0;
-		p->state = UNUSED;
-		if(status != NULL){
-	   		*status = p->exit_status;	
-		}
-		release(&ptable.lock);
-		return _pid;
+	_pid = p->pid;
+	kfree(p->kstack);
+	p->kstack = 0;
+	freevm(p->pgdir);
+	p->pid = 0;
+	p->parent = 0;
+	p->name[0] = 0;
+	p->killed = 0;
+	p->state = UNUSED;
+	if(status){
+	  status = &p->exit_status;	
+	}
+	release(&ptable.lock);
+	return _pid;
         }
       }
    if((!found_me) || (curr_proc->killed)){
@@ -548,6 +551,7 @@ int waitpid(int pid,int *status,int options){
    }
    sleep(curr_proc, &ptable.lock);
   }
+  
 }
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.

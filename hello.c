@@ -2,7 +2,7 @@
 #include "types.h"
 //#include <stdint.h>
 //#include "inttypes.h"
-int main(int argc, char **argv){
+int main(int argc, char *argv[]){
 	int pid, ret_pid;
 	int random_test_value = 0;
 	int *exit_status;
@@ -15,6 +15,7 @@ int main(int argc, char **argv){
 	}else if(pid > 0){
 		//what does wait(exit_status) return though.
 		ret_pid = wait(exit_status);
+		//ret_pid = waitpid(0,exit_status,0);
 		printf(1,"\nThis is the parent: PID# %d has exited with status %d\n",ret_pid,exit_status);	
 	}else
 		exit(-1);

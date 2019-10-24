@@ -28,7 +28,17 @@ sys_wait(void)
   random_ptr = NULL;
   return wait(random_ptr);
 }
-
+int 
+sys_waitpid(void)
+{
+   int pidz;
+   int *statuz;
+   int optionz;
+   argint(0, &pidz);
+   argptr(1, (char**) &statuz, sizeof(int*));
+   argint(2, &optionz);
+   return waitpid(pidz,statuz,optionz);
+} 
 int
 sys_kill(void)
 {

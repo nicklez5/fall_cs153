@@ -1,16 +1,13 @@
 #include "types.h"
 #include "user.h"
 #define WNOHANG 	1
-int exitWait(void);
-int waitPid(void);
-int CELEBW02(void);
 int main(int argc, char *argv[])
 {
-	/*		
+			
 	int exitWait(void);
 	int waitPid(void);
 	int CELEBW02(void);
-	*/
+	
 
   printf(1, "\n This program tests the correctness of your lab#1\n");
   
@@ -34,8 +31,8 @@ int exitWait(void) {
 	  int exit_status;
 	  //exit_status = &random_test_value; 
 	
-       int i;
-  // use this part to test exit(int status) and wait(int* status)
+      	 int i;
+	 // use this part to test exit(int status) and wait(int* status)
  
   printf(1, "\n  Parts a & b) testing exit(int status) and wait(int* status):\n");
 
@@ -46,12 +43,12 @@ int exitWait(void) {
       {
       printf(1, "\nThis is child with PID# %d and I will exit with status %d\n", getpid(), 0);
       exit(0);
-  }
+      }
       else
-      {
+     	{
 	 printf(1, "\nThis is child with PID# %d and I will exit with status %d\n" ,getpid(), -1);
-      exit(-1);
-  } 
+      	 exit(-1);
+  	} 
     } else if (pid > 0) { // only the parent executes this code
       ret_pid = wait(&exit_status);
       printf(1, "\n This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
@@ -114,9 +111,8 @@ int CELEBW02(void){
  printf(1, "\n  Part e) the waitpid option WNOHANG, test program CELEBW02 \n");
 
   int pid, retpid;
-  int random_test_value = 0;
-  int *status;
-  status = &random_test_value;
+  int status;
+ 
  
 
   if ((pid = fork()) < 0)
@@ -126,7 +122,7 @@ int CELEBW02(void){
     exit(1);
   }
   else do {
-    if ((retpid = waitpid(pid, status, WNOHANG)) == -1)
+    if ((retpid = waitpid(pid, &status, WNOHANG)) == -1)
       printf(2, "wait() error");
     else if (retpid == 0) {
       printf(1, "child is still running \n");

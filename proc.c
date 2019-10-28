@@ -249,7 +249,7 @@ exit(int status)
   curproc->cwd = 0;
 
   //Im guessing status has been defined and you store the terminated process exit status here. 
-  curproc->exit_status = status;
+  //curproc->exit_status = status;
   acquire(&ptable.lock);
 
   // Parent might be sleeping in wait().
@@ -263,7 +263,7 @@ exit(int status)
         wakeup1(initproc);
     }
   }
-
+  curproc->exit_status = status;
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -311,12 +311,13 @@ wait(int *status)
         p->killed = 0;
         p->state = UNUSED;
 	if(status){
-	   status = &p->exit_status;	
+	   *status = p->exit_status;	
 	} 	
         release(&ptable.lock);
         return pid;
       }
     }
+
 
     // No point waiting if we don't have any children.
     if(!havekids || curproc->killed){
@@ -539,8 +540,9 @@ waitpid(int pid, int *status, int options)
 	p->killed = 0;
 	p->state = UNUSED;
 	if(status){
-	  status = &p->exit_status;	
+	  *status = p->exit_status;	
 	}
+
 	release(&ptable.lock);
 	return _pid;
         }
